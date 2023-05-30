@@ -1,0 +1,62 @@
+{
+  "name": "suesuesi_pos",
+  "version": "1.1.9",
+  "description": "스스시 포스 프로그램",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "deploy": "electron-builder -w nsis:ia32 --publish always",
+    "dp": "electron-builder --windows nsis:ia32"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "auto-launch": "^5.0.5",
+    "axios": "^0.27.2",
+    "crypto": "^1.0.1",
+    "electron-is-dev": "^2.0.0",
+    "electron-localshortcut": "^3.2.1",
+    "electron-log": "^4.4.8",
+    "electron-store": "^8.0.2",
+    "electron-updater": "^5.2.1"
+  },
+  "devDependencies": {
+    "electron": "^19.0.6",
+    "electron-builder": "^23.1.0"
+  },
+  "build": {
+    "productName": "스스시",
+    "appId": "com.softapp.suesuesi_pos",
+    "asar": true,
+    "protocols": {
+      "name": "softapp",
+      "schemes": [
+        "suesuesi_pos"
+      ]
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "softpn",
+        "repo": "suesuesi_pos"
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "./icon.ico"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": false
+    },
+    "directories": {
+      "buildResources": "./resources/installer/",
+      "output": "./dist/",
+      "app": "."
+    }
+  }
+}

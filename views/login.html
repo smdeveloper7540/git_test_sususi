@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>스스시</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/NotoSansKR.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script src="../js/function.js"></script>
+    <script src="../js/socket.io.js"></script>
+
+    <script src="../js/busyload.min.js"></script>
+    <link rel="stylesheet" href="../js/busyload.min.css" />
+
+    <script src="../js/mustache.min.js"></script>
+
+    <script src="../js/jquery.validate.min.js"></script>
+    <script src="../js/messages_ko.js"></script>
+
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+    <script src="../js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="../js/fancybox4/fancybox.css" />
+    <script src="../js/fancybox4/fancybox.umd.js"></script>
+
+    <script src="../js/nativeFunction.js"></script>
+
+    <style>
+      body {
+        -webkit-touch-callout: none;
+        -webkit-text-size-adjust: none;
+        -ms-text-size-adjust: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-highlight: none;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .comp_button {
+        padding: 20px;
+        border: 1px solid #f5f5f5;
+        border-radius: 8px;
+        background: #f5f5f5;
+        margin-bottom: 20px;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.45px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="wrap" class="po_rel">
+      <div class="member_login">
+        <div class="login_top_tit padt50 padb10 align_center">
+          <img src="../icon.png" alt="스스시" class="h120 padt16" />
+        </div>
+
+        <form
+          id="login_form"
+          name="login_form"
+          class="w_100 padt40 bx"
+          novalidate="novalidate"
+        >
+          <input type="hidden" name="referrer" value="CAFEIN_POS" />
+          <div>
+            <input
+              type="text"
+              placeholder="아이디를 입력하세요."
+              class="border-ddd login-input w_100 bx fs16 h52 marb6 padl12 br4"
+              id="mem_id"
+              name="mem_id"
+              aria-required="true"
+              aria-invalid="false"
+            />
+          </div>
+          <div>
+            <input
+              type="password"
+              placeholder="비밀번호를 입력하세요."
+              class="border-ddd login-input w_100 bx fs16 h52 marb6 padl12 br4"
+              id="mem_pw"
+              name="mem_pw"
+              aria-required="true"
+              aria-invalid="false"
+            />
+          </div>
+          <div>
+            <button
+              type="button"
+              class="com_bg align_center noto-m fs16 w_100 bx h48 br4 f-fff"
+              id="login_btn"
+              name="login_btn"
+            >
+              로그인
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div
+      id="comp_select_modal"
+      style="width: 100%; height: 100%; display: none"
+    >
+      <h1 class="text-algin-center">업체를 선택하세요</h1>
+      <div class="d-flex flex-column" id="comp_wrap"></div>
+    </div>
+    <script type="module">
+      import { MAIN_WIDTH, MAIN_HEIGHT } from '../lib/constant_esm.js'
+
+      const url = 'https://cafein125.softwow.co.kr/'
+      const url_api = 'https://cafein125.softwow.co.kr/api/'
+
+      $(document).ready(function () {
+        $.busyLoadSetup({
+          animation: 'fade',
+          spinner: 'accordion',
+          background: 'rgba(60, 60, 60, 0.86)',
+          text: '로딩중 ..',
+        })
+
+        $('#login_btn').click(function () {
+          $('#login_form').submit()
+        })
+
+        $('#login_form').validate({
+          rules: {
+            mem_id: {
+              required: true,
+            },
+            mem_pw: {
+              required: true,
+              minlength: 4,
+              maxlength: 20,
+            },
+          },
+          // Messages for form validation
+          messages: {
+            mem_id: {
+              required: '아이디를 입력하세요.',
+              alphanumeric: '영문과 숫자만 입력할수 있습니다.',
+            },
+            mem_pw: {
+              required: '비밀번호를 입력하세요.',
+            },
+          },
+          // Do not change code below
+          errorPlacement: function (error, element) {
+            error.insertAfter(element.parent())
+          },
+          submitHandler: function (form) {
+            $.busyLoadFull('show')
+
+            $.ajax({
+              type: 'POST',
+              url: url_api + '/pos/login.php',
+              cache: false,
+              data: $('#login_form').serializeArray(),
+              dataType: 'json',
+              success: async function (result) {
+                $.busyLoadFull('hide')
+                if (result.state == 'success') {
+                  //업체 선택 팝업창 출력
+
+                  $('#comp_wrap').empty()
+                  var temp = ''
+                  for (var i = 0; i < result.data.length; i++) {
+                    temp =
+                      temp +
+                      '<div class="p-2 comp_button" data-mem_idx="' +
+                      result.data[i].mem_idx +
+                      '" data-comp_idx="' +
+                      result.data[i].comp_idx +
+                      '" data-mem_level="' +
+                      result.data[i].mem_level +
+                      '" data-comp_name="' +
+                      result.data[i].comp_name +
+                      '"  data-ps_type="' +
+                      result.data[i].ps_type +
+                      '">' +
+                      result.data[i].comp_name +
+                      '</div>'
+                  }
+
+                  $('#comp_wrap').append(temp)
+
+                  Fancybox.show(
+                    [{ src: '#comp_select_modal', type: 'inline' }],
+                    {
+                      dragToClose: false,
+                      hideScrollbar: false,
+                    },
+                  )
+
+                  //창사이즈 변경
+                  /*
+                        n_resize(300,350);
+
+                        //로그인 유지를 위해 내용저장
+                        var res = JSON.stringify(result);
+                        var enc = await n_encrypt(res);
+                        n_setItem("login","Y");
+                        n_setItem("mem_info",enc);
+                        location.href="./index.html";
+                        */
+                } else {
+                  await n_error(result.msg)
+                }
+              },
+              error: async function (xhr, err) {
+                $.busyLoadFull('hide')
+                await n_error('에러발생')
+              },
+            })
+            return false
+          },
+        })
+
+        $(document).on('click', '.comp_button', async function () {
+          var mem_idx = $(this).data('mem_idx')
+          var comp_idx = $(this).data('comp_idx')
+          var mem_level = $(this).data('mem_level')
+          var comp_name = $(this).data('comp_name')
+          var ps_type = $(this).data('ps_type')
+
+          var mem_info = {
+            mem_idx: mem_idx,
+            comp_idx: comp_idx,
+            mem_level: mem_level,
+            comp_name: comp_name,
+            ps_type: ps_type,
+          }
+          //console.log(mem_info);
+          var enc = await n_encrypt(JSON.stringify(mem_info))
+          n_setItem('login', 'Y')
+          n_setItem('comp_idx', comp_idx)
+          n_setItem('mem_info', enc)
+          n_setItem('qr_print_setting', 'N')
+          n_resize(MAIN_WIDTH, MAIN_HEIGHT)
+          location.href = './index.html'
+        })
+      })
+    </script>
+  </body>
+</html>

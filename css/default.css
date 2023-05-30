@@ -1,0 +1,134 @@
+    @charset "utf-8";
+
+    @import url(NotoSansKR.css);
+
+    /* CSS Document */
+    *, :after, :before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    }
+    html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, a, input, textarea,
+    blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small,
+    strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table,
+    caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, figcaption, figure,
+    footer, header, hgroup, button, menu, nav, section, summary, time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    text-shadow: none;
+    -webkit-box-sizing: border-box !important;
+    -moz-box-sizing: border-box !important;
+    box-sizing: border-box !important;
+    font-size: 14px;
+    font-family:'noto-r', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    list-style: none;
+    text-shadow: none;
+    }
+    body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    overflow: hidden;
+    color:#333;
+    font-family:'noto-r', sans-serif;
+    }
+    .wrapper{
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    max-width: 1280px;
+    }
+    .inner{
+    position:relative;
+    width:1200px;
+    margin:0 auto
+    }
+    .layout_wrapper{
+    background: #fff;
+    border-right:1px solid #e1e1e1;
+    border-left:1px solid #e1e1e1;
+    width:1180px;
+    margin: 0 auto;
+    clear:both;
+    }
+
+    #footer_wrap{
+    width:100%;
+    clear:both;
+    overflow:hidden;
+    }
+
+    a{text-decoration:none; color:#333;}
+
+
+    ul{list-style:none;
+    padding:0;
+    margin:0;}
+
+    li{list-style:none;
+    padding:0;
+    margin:0;}
+
+    p{margin:0;}
+
+    .cf:after{
+        display: block;
+        content: '';
+        clear: both;
+    }
+    input {
+        font-size: inherit;
+        font-family: inherit;
+        margin: 0;
+        line-height: normal;
+        -webkit-border-radius: 0;
+        resize: none;
+    }
+    button {
+        outline: none;
+    }
+    input {
+        outline-width: 0;
+    }
+    ::placeholder{
+        color:#999;
+        font-size: 14px;
+    }
+    label {
+        /* font-weight: normal;
+        vertical-align: middle; */
+    }
+    *, *:after, *:before {
+        box-sizing: border-box;
+    }
+
+    table, th, td {
+        font-size: 16px;
+        border-collapse: collapse;
+        border-spacing: 0;
+        font-weight: normal;
+    }
+
+    .header{background-color: #18191d;}
+
+    /*접근성을 위한 주석 태그에 입힐 클래스*/
+    .v_hidden {
+        border: 0;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+    }
+    img {
+        border: 0;
+        vertical-align: middle;
+        font-size: 1em;
+        max-width: 100%;
+    }

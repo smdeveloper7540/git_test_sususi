@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>스스시</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/NotoSansKR.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+
+    <link rel="stylesheet" href="../css/fontawesome.min.css" />
+
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script src="../js/function.js"></script>
+    <script src="../js/socket.io.js"></script>
+    <script src="../js/busyload.min.js"></script>
+    <link rel="stylesheet" href="../js/busyload.min.css" />
+    <script src="../js/mustache.min.js"></script>
+
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+    <script src="../js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="../js/fancybox4/fancybox.css" />
+    <script src="../js/fancybox4/fancybox.umd.js"></script>
+
+    <script src="../js/nativeFunction.js"></script>
+
+    <style>
+      body {
+        -webkit-touch-callout: none;
+        -webkit-text-size-adjust: none;
+        -ms-text-size-adjust: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-highlight: none;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .comp_button {
+        padding: 20px;
+        border: 1px solid #f5f5f5;
+        border-radius: 8px;
+        background: #f5f5f5;
+        margin-bottom: 20px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: -0.45px;
+      }
+      /* 팝업 */
+      .popup {
+        width: 100%;
+        height: 100vh;
+        position: fixed;
+        background: rgba(0, 0, 0, 0.75);
+        top: 0px;
+        left: 0px;
+        display: none;
+        z-index: 2;
+      }
+      .full_popup {
+        width: 100%;
+        height: 100%;
+        background: #fff;
+      }
+      .popup_close {
+        display: inline-block;
+        margin-bottom: 0px !important;
+      }
+      .popup_close img {
+        width: 14px;
+        padding: 10px 0px;
+      }
+      .completeMent {
+        display: inline-block;
+        margin-left: 4px;
+        letter-spacing: -1.45px;
+      }
+      .pointWrap {
+        padding: 0 10px;
+      }
+      .save_point {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        display: inline-block;
+        margin-left: 4px;
+        width: calc(100% - 64px);
+      }
+      .save_point2 {
+        width: calc(100% - 75px);
+      }
+      .bottomWrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .bottomWrap .ta_view {
+        width: 187px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+      }
+      .pos_list {
+        width: 59px;
+        position: absolute;
+        top: 5px;
+        right: 10%;
+        background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 12px;
+        padding: 0px !important;
+      }
+
+      .btn_white_absolute {
+        width: 59px;
+        position: absolute;
+        top: 5px;
+        right: 10%;
+        background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 12px;
+        padding: 0px !important;
+      }
+      .popup_close svg {
+        width: 25px;
+        height: 30px;
+      }
+      /* 알림팝업 */
+      .alertWrap {
+        width: 100%;
+        height: 100vh;
+        position: fixed;
+        background: rgba(0, 0, 0, 0.75);
+        top: 0px;
+        left: 0px;
+        display: block;
+        z-index: 2;
+      }
+      .alertWrap .alert {
+        width: 80%;
+        background: #fff;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        -webkit-transform: translate(-50%, -50%);
+        height: 108px;
+        border-radius: 10px;
+        padding: 15px;
+      }
+      .alertWrap .alert .alertMent {
+        font-size: 16px;
+        letter-spacing: -1.45px;
+        word-break: break-word;
+        margin: 0px;
+      }
+
+      .alertWrap .alert .alertBtn {
+        position: fixed;
+        bottom: 6px;
+        right: 10px;
+      }
+      .alertWrap .alert .alertBtn .btn {
+        background: #007aff;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 500;
+        width: 60px;
+        height: 27px;
+        line-height: 15px;
+      }
+      .alertWrap .alert .alertBtn .btn.noBtn {
+        background: #ccc;
+      }
+      /* 에러팝업 */
+
+      .line {
+        background: #e60023;
+        height: 8px;
+      }
+      .bottom_line {
+        position: absolute;
+        bottom: 0px;
+        left: 0;
+      }
+      .alertWrap .alert .errorBtn .btn {
+        background: #e60023;
+        border-radius: 10px;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 500;
+        width: 57px;
+        height: 34px;
+        line-height: 34px;
+        text-align: center;
+      }
+      .errorTit {
+        padding-bottom: 10px;
+        background: #e60023;
+      }
+      .errorMent {
+        font-size: 24px;
+        /* padding: 0px; */
+        font-weight: bold;
+        margin: 0px;
+        text-align: center;
+      }
+      /* 포스기 이전 다음 화살표 */
+      .posBtn {
+        border: none;
+        background: none;
+      }
+      .posBtn svg {
+        color: #3e3e3e;
+      }
+
+      #pos_list_wrap {
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        margin-bottom: 5px;
+        margin-top: 5px;
+        text-align: center;
+        padding-top: 7px;
+        padding-bottom: 7px;
+      } 
+      .pos_select > p {
+        margin-bottom: 0px;
+        padding-bottom: 7px;
+        letter-spacing: -0.45px;
+      }
+
+      .pos_alert {
+        padding: 10px !important;
+      }
+
+      .pos_list_wrap {
+        position: relative;
+      }
+      .posBtnWrap {
+        display: inline-block;
+        position: absolute;
+        top: 0px;
+        right: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container po_rel" style="border-bottom: 1px solid; height: 30px">
+      <div style="float: left" id="cafe_name"></div>
+
+      <div style="float: right; width: 20px; height: 20px; border: 1px solid; float: right; text-align: center" class="open_menu">=</div>
+      <button id="btn_save" style="float: right; background-color: #8d8d8d; color: white; box-sizing: border-box; border: 1px solid; margin-right: 10px; border: 1px solid; margin-right: 10px; border-radius: 10px; padding: 1px 7px">수동적립</button>
+      <div class="clearfix"></div>
+    </div>
+    <div class="menu" style="position: absolute; background-color: #fff; height: 400px; width: 100%; left: 0; top: 0; display: none; z-index: 1">
+      <div class="po_rel" style="width: 100%">
+        <div style="float: right; width: 30px; height: 30px; border: 1px solid; text-align: center" class="close_menu">X</div>
+        <div class="clearfix"></div>
+        <!-- <hr/> -->
+        <div class="version"></div>
+        <hr />
+        <div id="setting">설정</div>
+        <hr />
+        <div class="logout">로그아웃</div>
+        <hr />
+        
+      </div>
+    </div>
+    <div class="container">
+      <div class="row" style="position: relative; width: 300px; padding-bottom: 10px">
+        <div class="">판매금액 : <span id="pos_price" data-price="0" data-idx="0"></span></div>
+        <div>
+          적립<span class="ps_text"></span> :
+          <span id="point" data-point="0"></span>
+        </div>
+        <button type="button" class="pos_list" style="position: absolute; top: 5px; right: 10%">적립내역</button>
+
+        <!-- 스탬프타입에만 출력 스탬프의 수를 조절가능 -->
+        <button type="button" class="stamp_use btn_white_absolute stamp_plus" style="position: absolute; top: 28px; right: 10%">+</button>
+        <button type="button" class="stamp_use btn_white_absolute stamp_minus" style="position: absolute; top: 28px; right: 30%">-</button>
+        <div class="clearfix"></div>
+      </div>
+      <div class="pos_list_wrap" style="display: none">
+        <!-- <select>
+                <option value="phone_num">폰번호</option>
+            </select> -->
+        010-<input id="phone_num_txt" type="text" style="border: 1px solid #888; border-radius: 5px" />
+        <div class="posBtnWrap">
+          <button id="prev_btn" type="button" class="posBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-caret-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+              <path d="M14 6l-6 6l6 6v-12"></path>
+            </svg></button
+          ><button id="next_btn" type="button" class="posBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-caret-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+              <path d="M10 18l6 -6l-6 -6v12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div id="pos_list" style="height: 400px; overflow: hidden"></div>
+      </div>
+
+      <div class="button_wrap">
+        <!-- 사용인원 카운트용 -->
+        <div style="width: 100%; position: relative; padding-top: 5px; display: none">
+          <input type="hidden" id="visit_count" value="1" />
+          <div class="count_view" style="width: 33.3%; height: 50px; float: left; box-sizing: border-box; border: 1px solid; display: flex; justify-content: center; align-items: center; background-color: rgb(0, 0, 0); color: white">1</div>
+          <div class="plus_btn" style="width: 33.3%; height: 50px; float: left; box-sizing: border-box; border: 1px solid; display: flex; justify-content: center; align-items: center; background-color: rgb(204, 43, 43); color: white">+</div>
+          <div class="minus_btn" style="width: 33.3%; height: 50px; float: left; box-sizing: border-box; border: 1px solid; display: flex; justify-content: center; align-items: center; background-color: rgb(38, 0, 255); color: white">-</div>
+          <div class="clearfix"></div>
+        </div>
+        <div style="width: 100%; position: relative">
+          <div class="user_btn" style="width: 49%; height: 50px; float: left; box-sizing: border-box; display: flex; margin-right: 1px; margin-bottom: 1px; justify-content: center; align-items: center; background: #84ad13; color: white">회원</div>
+          <div class="n_user_btn" style="width: 49%; height: 50px; float: left; box-sizing: border-box; display: flex; margin-bottom: 1px; justify-content: center; align-items: center; background: #f36020; color: white">비회원</div>
+          <!-- <div class="go_main_btn" style="width:49%;height:50px;float: left;box-sizing: border-box;display: flex;margin-right:1px;margin-bottom:1px;justify-content: center;align-items: center;background: #f4cb67;color: white;">메인화면이동</div> -->
+          <!-- <div class="btn_pos_cancel" style="width: 49%;height:50px;background-color: rgb(206, 21, 61);color: white;display: flex;justify-content: center;align-items: center;background: #a7d5d9;">적립안함</div> -->
+          <div class="clearfix"></div>
+        </div>
+        <div style="width: 100%; position: relative">
+          <div class="bottomWrap">
+            <div class="ta_view">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-aspect-ratio" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                <path d="M7 12v-3h3"></path>
+                <path d="M17 12v3h-3"></path>
+              </svg>
+              <span id="tablet_view" style="padding-left: 3px">태블릿화면:연결전</span>
+            </div>
+            <i class="point_use_toggle fas fa-arrow-alt-circle-down fa-2x" style="font-size: 20px; margin-top: 2px"></i>
+          </div>
+        </div>
+
+        <!-- 포인트 사용 -->
+        <div style="width: 100%; position: relative; padding-top: 5px" class="point_wrap">
+          <div class="ps_use" style="width: 98%; height: 36px; background-color: rgba(16, 58, 197, 0.801); color: white; text-align: center; line-height: 36px; margin: 0 auto">사용 QR</div>
+          <div style="float: left">
+            아이디 : <span class="user_id"></span><br />
+            보유<span class="ps_text"></span> : <span class="point"></span><br />
+            사용<span class="ps_text"></span> : <span class="amount"></span><br />
+          </div>
+          <div style="clear: both"></div>
+          <div class="point_use_list" style="width: 59px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; font-size: 12px; padding: 0px !important; background: #fff; text-align: center; position: absolute; top: 49px; right: 2%; height: 20px; line-height: 20px">사용내역</div>
+          <div class="go_main_btn main_move" style="width: 77px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; font-size: 12px; padding: 0px !important; background: #fff; text-align: center; position: absolute; top: 76px; right: 2%; height: 20px; line-height: 20px">메인화면 이동</div>
+        </div>
+
+        <!-- 스탬프 : 쿠폰사용 -->
+        <div style="width: 100%; position: relative; padding-top: 5px; padding-bottom: 20px" class="stamp_wrap">
+          <div class="ps_use" style="width: 98%; height: 36px; background-color: rgba(16, 58, 197, 0.801); color: white; text-align: center; line-height: 36px; margin: 0 auto">사용 QR</div>
+          <div style="float: left">
+            아이디 : <span class="user_id"></span><br />
+            쿠폰명 : <span class="coupon_title"></span><br />
+          </div>
+          <div style="clear: both"></div>
+          <div class="coupon_use_list" style="width: 59px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; font-size: 12px; padding: 0px !important; background: #fff; text-align: center; position: absolute; top: 49px; right: 2%; height: 20px; line-height: 20px">사용내역</div>
+          <div class="go_main_btn main_move" style="width: 77px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 5px; font-size: 12px; padding: 0px !important; background: #fff; text-align: center; position: absolute; top: 76px; right: 2%; height: 20px; line-height: 20px">메인화면 이동</div>
+        </div>
+
+        <div style="width: 100%; display: flex; align-items: center; padding-top: 4px">
+          <div class="ps_approve" data-approve="N" style="width: 49%; height: 30px; box-sizing: border-box; border: 1px solid; display: flex; justify-content: center; align-items: center; background: #888; color: white">거절</div>
+          <div class="ps_approve" data-approve="Y" style="width: 49%; height: 30px; box-sizing: border-box; border: 1px solid; display: flex; justify-content: center; align-items: center; background-color: #34aadc; color: white">승인</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- style="display: none;" -->
+    <div class="popup" id="add_point_modal" style="display: none">
+      <div class="full_popup">
+        <div class="pointIcon"></div>
+        <div class="alertCont">
+          <div class="alerBtn" style="text-align: left; margin-left: 10px; display: inline-block">
+            <p class="popupOk" id="link_popup_show">
+              <svg role="img" xmlns="http://www.w3.org/2000/svg" width="48px" height="48px" viewBox="0 0 24 24" aria-labelledby="arrowLeftIconTitle" stroke="#2b2b2b" stroke-width="0.5" stroke-linecap="square" stroke-linejoin="miter" fill="none" color="#2b2b2b">
+                <title id="arrowLeftIconTitle">Arrow Left</title>
+                <path d="M9 6l-6 6 6 6" />
+                <path d="M21 12H4" />
+                <path stroke-linecap="round" d="M3 12h1" />
+              </svg>
+            </p>
+          </div>
+          <div class="pointWrap">
+            <p class="completeMent">판매금액:</p>
+            <input id="add_price" name="add_price" type="text" class="save_point" />
+          </div>
+          <div class="pointWrap">
+            <p class="completeMent">적립<span class="ps_text"></span>:</p>
+            <input id="add_point" name="add_point" type="text" class="save_point save_point2" />
+          </div>
+
+          <button id="btn_save_succ" type="button" style="width: 100%; height: 45px; margin-top: 11px; position: absolute; bottom: 0px; left: 0px">적립완료</button>
+        </div>
+      </div>
+    </div>
+    <!-- 설정팝업 -->
+    <div class="popup" id="setting_popup" style="display: none">
+      <div class="full_popup">
+        <div class="pointIcon"></div>
+        <div class="alertCont">
+          <div class="alerBtn" style="text-align: left; margin-left: 10px; display: inline-block">
+            <p class="popupOk popup_close" id="">
+              <svg role="img" xmlns="http://www.w3.org/2000/svg" width="48px" height="48px" viewBox="0 0 24 24" aria-labelledby="arrowLeftIconTitle" stroke="#2b2b2b" stroke-width="0.5" stroke-linecap="square" stroke-linejoin="miter" fill="none" color="#2b2b2b">
+                <title id="arrowLeftIconTitle">Arrow Left</title>
+                <path d="M9 6l-6 6 6 6" />
+                <path d="M21 12H4" />
+                <path stroke-linecap="round" d="M3 12h1" />
+              </svg>
+            </p>
+          </div>
+          <div class="pointWrap">
+            <h2 class="completeMent">QR프린팅 사용 유무</h2>
+            사용<input class="qr_print" type="radio" name="qr_print" value="Y" /> 미사용<input class="qr_print" type="radio" name="qr_print" value="N" />
+          </div>
+
+          <button id="btn_setting_succ" type="button" style="width: 100%; height: 45px; margin-top: 11px; position: absolute; bottom: 0px; left: 0px">적용</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="point_use_modal" style="display: none">
+      <h1 class="text-algin-center">사용내역</h1>
+      <p>아이디 / 가격/ 사용유무 / 등록일</p>
+      <div id="point_use_wrap"></div>
+    </div>
+
+    <div id="coupon_use_modal" style="display: none">
+      <h1 class="text-algin-center">쿠폰 사용내역</h1>
+      <p>아이디 / 쿠폰명 / 사용일</p>
+      <div id="coupon_use_wrap"></div>
+    </div>
+
+    <div class="alertWrap popup" id="alert_popup" style="display: none">
+      <div class="alert">
+        <p class="alertMent" id="alert_ment">적립완료된 내역입니다.</p>
+        <div class="alertBtn">
+          <div class="btn popup_close">확인</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alertWrap popup" id="yes_no_popup" style="display: none">
+      <div class="alert pos_alert">
+        <!-- 제목이나 타이틀이 있을때 -->
+        <div class="title">
+          <p class="titMent" style="margin-bottom: 4px; font-size: 13px">적립취소여부</p>
+        </div>
+        <p class="alertMent" style="font-size: 15px">적립취소하시겠습니까?</p>
+        <div class="alertBtn">
+          <div class="btn noBtn popup_close" id="btn_no">아니요</div>
+          <div class="btn yesBtn" id="btn_yes" style="margin-left: 6px">확인</div>
+        </div>
+        <div class="line bottom_line"></div>
+      </div>
+    </div>
+    <div class="alertWrap popup" id="sms_popup" style="display: none">
+      <div class="alert pos_alert">
+        <!-- 제목이나 타이틀이 있을때 -->
+        <div class="title">
+          <p class="titMent" style="margin-bottom: 4px; font-size: 13px">SMS재전송</p>
+        </div>
+        <p class="alertMent" style="font-size: 15px">SMS를 재전송 하시겠습니까?</p>
+        <div class="alertBtn">
+          <div class="btn noBtn popup_close">아니요</div>
+          <div class="btn yesBtn" id="btn_sms_send_yes" style="margin-left: 6px">확인</div>
+        </div>
+        <div class="line bottom_line"></div>
+      </div>
+    </div>
+    <div class="alertWrap popup" id="qr_code_issue_popup" style="display: none">
+      <div class="alert pos_alert">
+        <!-- 제목이나 타이틀이 있을때 -->
+        <div class="title">
+          <p class="titMent" style="margin-bottom: 4px; font-size: 13px">QR코드출력</p>
+        </div>
+        <p class="alertMent" style="font-size: 15px">QR코드를 출력하시겠습니까?</p>
+        <div class="alertBtn">
+          <div class="btn noBtn popup_close">아니요</div>
+          <div class="btn yesBtn" id="btn_qr_code_issue_yes" style="margin-left: 6px">확인</div>
+        </div>
+        <div class="line bottom_line"></div>
+      </div>
+    </div>
+    <div class="alertWrap popup" id="error_popup" style="display: none">
+      <div class="alert">
+        <p class="alertMent" id="error_popup_ment">적립완료된 내역입니다.</p>
+        <div class="alertBtn">
+          <div class="btn popup_close" style="background: #e60023">확인</div>
+        </div>
+      </div>
+    </div>
+    <script type="text/x-mustache" id="template">
+      <div id="pos_list_wrap">
+          <p>금액 : {{price}}({{created_at}}){{^save_finish}}<button  class='pos_select' data-idx='{{idx}}' data-price='{{price}}' data-is_end='{{is_end}}'>선택</button>{{/save_finish}} </p>
+          <!-- 적립완료 -->
+          {{#save_finish}}
+              <p>{{ps}} {{pstype}} 적립완료</p>
+              <p>{{user_data}}</p>
+              <span data-sidx='{{sidx}}' class='ps_save_del' style='border: 1px solid #888;width: 62px; border-radius: 3px;'>적립취소</span>
+          {{/save_finish}}
+          <!-- 적립 미완료 -->
+
+          {{^save_finish}}
+          <!-- token이 문자로 보내졌을때 -->
+          <!-- token에 번호가 있다면? -->
+            {{#resend_sms}}
+            <p>폰번호:{{phone}}</p>
+                <button class="resend_sms" data-pos_idx="{{idx}}" style="border:1px solid black;"  data-phone="{{phone}}">재전송</button>
+            {{/resend_sms}}
+                <button class="qr_code_issue" data-pos_idx="{{idx}}" style="border:1px solid black;">QR출력</button>
+          {{/save_finish}}
+          
+
+          <p>{{{is_end_ment}}}</p>
+          <div style='display: flex;align-items: flex-start;'>
+              <p style="margin-bottom: 0px; padding-left: 23px; padding-right: 14px;">{{phone_ment}}</p>
+              
+          </div>
+      </div>
+    </script>
+
+    <script type="module">
+      import { MAIN_WIDTH, MAIN_USE_HEIGHT, MAIN_HEIGHT } from '../lib/constant_esm.js'
+
+      const url = 'https://cafein125.softwow.co.kr/'
+      const url_api = 'https://cafein125.softwow.co.kr/api/'
+      const url_j = 'https://cafein125.softwow.co.kr/j?' //설치 및 적립주소
+      
+      $.busyLoadSetup({
+        animation: 'fade',
+        spinner: 'accordion',
+        background: 'rgba(60, 60, 60, 0.86)',
+        text: '로딩중 ..',
+      })
+
+      $.busyLoadFull('show')
+
+      /*
+      초기화 및 소켓설정부분
+      */
+      var socketurl = 'https://softwow.co.kr:3020/pos'
+      var socket = io.connect(socketurl, {
+        transports: ['websocket'],
+        upgrade: true,
+      })
+
+      var version = ''
+      var mem_info = ''
+      var comp_idx = ''
+      var comp_name = ''
+      var ps_type = ''
+      var template = $('#template').html()
+      ;(async () => {
+        try {
+          var dec = await n_getItem('mem_info')
+
+          mem_info = JSON.parse(await n_decrypt(dec))
+          comp_idx = mem_info.comp_idx
+          comp_name = mem_info.comp_name
+          ps_type = mem_info.ps_type
+
+          $('#cafe_name').text(comp_name)
+          socket.emit(
+            'init',
+            {
+              comp_idx: comp_idx,
+            },
+            initDone,
+          )
+          version = await n_getVersion()
+          //앱버전
+          $('.version').text("v"+version);
+
+          localStorage.setItem('pos_idx', 0)
+          localStorage.setItem('ps_use_request_idx', '')
+          localStorage.setItem('coupon_idx', '')
+
+          if (ps_type == 'P') {
+            $('.ps_text').text('포인트')
+            $('.stamp_wrap').css('display', 'none')
+            $('.stamp_use').css('display', 'none')
+          } else if (ps_type == 'S') {
+            $('.ps_text').text('스탬프')
+            $('.point_wrap').css('display', 'none')
+          }
+        } catch (e) {
+          await n_clearItem()
+          location.href = './login.html'
+        }
+      })()
+
+      function initDone() {
+        $.busyLoadFull('hide')
+      }
+      //포스기에서 태블릿 현재화면
+      socket.on('tablet_view', function (res) {
+        $('#tablet_view').text(res.tablet_view)
+      })
+      //포스기에서 결제후 가격 업데이트
+      socket.on('pos_price', function (res) {
+        localStorage.setItem('pos_idx', res.idx)
+        $('#pos_price').text(res.price + '원')
+
+        $.busyLoadFull('show')
+        $.ajax({
+          type: 'POST',
+          url: url_api + 'pos/get_ps.php',
+          cache: false,
+          data: {
+            pos_idx: res.idx,
+            comp_idx: comp_idx,
+            price: res.price,
+          },
+          dataType: 'json',
+          success: function (result) {
+            //console.log(result);
+            $.busyLoadFull('hide')
+            if (result.state == 'success') {
+              if (ps_type === 'P') {
+                $('#point')
+                  .text(result.point + ' Point')
+                  .data('point', result.data)
+              } else if (ps_type === 'S') {
+                $('#point')
+                  .text(result.point + ' Stamp')
+                  .data('point', result.data)
+              }
+            } else {
+              n_error(result.msg)
+            }
+          },
+          error: function (xhr, err) {
+            $.busyLoadFull('hide')
+            n_error('에러가 발생했습니다.')
+          },
+        })
+      })
+
+      socket.on('ps_save_end', function (res) {
+        //console.log("CALLED");
+        $('#pos_price').text('')
+        localStorage.setItem('pos_idx', 0)
+        $('#point').text('적립완료')
+      });
+      socket.on('sms_save_end', function (res) {
+        localStorage.setItem('pos_idx', 0)
+        $('#point').text('문자전송완료')
+      })
+
+      
+
+      //유저 적립 완료 요청
+      socket.on('ps_user_save_call', function (res) {
+        var ps_use_request_idx = res.ps_use_request_idx
+        localStorage.setItem('ps_use_request_idx', ps_use_request_idx)
+
+        $.busyLoadFull('show')
+        $.ajax({
+          type: 'POST',
+          url: url_api + 'pos/get_ps_request.php',
+          cache: false,
+          data: {
+            comp_idx: comp_idx,
+            ps_use_request_idx: ps_use_request_idx,
+          },
+          dataType: 'json',
+          success: function (result) {
+            //console.log(result);
+            $.busyLoadFull('hide')
+            if (result.state == 'success') {
+              $('.user_id').text(result.user_id)
+              $('.point').text(result.point + 'P')
+              $('.amount').text(result.amount + 'P')
+              setVisitCount(1)
+            } else {
+              n_error(result.msg)
+            }
+          },
+          error: function (xhr, err) {
+            $.busyLoadFull('hide')
+            n_error('에러가 발생했습니다.')
+          },
+        })
+      })
+
+      //쿠폰 사용요청
+      socket.on('coupon_user_use_call', function (res) {
+    
+        var coupon_idx = res.idx
+        var user_id = res.user_id
+
+        localStorage.setItem('coupon_idx', coupon_idx)
+        localStorage.setItem('user_id', user_id)
+        
+        var ps_use_request_idx = res.ps_use_request_idx //쿠폰 사용요청idx
+        localStorage.setItem('ps_use_request_idx', ps_use_request_idx)
+
+        $.busyLoadFull('show')
+
+        $.ajax({
+          type: 'POST',
+          url: url_api + 'pos/get_coupon_request.php',
+          cache: false,
+          data: {
+            comp_idx: comp_idx,
+            coupon_idx: coupon_idx,
+            user_id: user_id,
+          },
+          dataType: 'json',
+          success: function (result) {
+            //console.log(result)
+            $.busyLoadFull('hide')
+            if (result.state == 'success') {
+
+              $('.user_id').text(user_id)
+              $('.coupon_title').text(result.coupon_title)
+            } else {
+              n_error(result.msg)
+            }
+          },
+          error: function (xhr, err) {
+            $.busyLoadFull('hide')
+            n_error('에러가 발생했습니다.')
+          },
+        })
+      })
+
+      /*******************************************************/
+
+      //사용자의 적립자체는 자동으로 진행됨
+      $(document).ready(async function () {
+            //qr_code출력 test
+            // $(document).on('click', '#btn_qr_code_issue', function () {
+            //   n_qr_code_issue();
+            // })
+        //수동적립
+        $('#btn_save').click(function () {
+          n_resize(MAIN_WIDTH, 250)
+          $('#add_point_modal').show()
+          // Fancybox.show([{ src: "#add_point_modal", type: "inline" }],{
+          //                     dragToClose :false,
+          //                     hideScrollbar :false
+          // });
+        })
+        //팝업닫기
+        $('.popup_close').click(function () {
+          $(this).closest('.popup').hide()
+        })
+
+        //링크팝업 제어
+        $('#link_popup_show').click(function () {
+          if (localStorage.getItem('use_toggle') == 'on') {
+            n_resize(MAIN_WIDTH, MAIN_USE_HEIGHT)
+            console.log(MAIN_USE_HEIGHT)
+          } else {
+            n_resize(MAIN_WIDTH, MAIN_HEIGHT)
+            console.log(MAIN_HEIGHT)
+          }
+          $('#add_point_modal').hide()
+        })
+        //설정
+        $('#setting').click(async function () {
+          $('#setting_popup').show()
+          var qr_print_setting = await n_getItem('qr_print_setting')
+          if (qr_print_setting == undefined || qr_print_setting == 'N') {
+            $("input[name='qr_print'][value=N]").prop('checked', true)
+          } else {
+            $("input[name='qr_print'][value=Y]").prop('checked', true)
+          }
+        })
+        $('#btn_setting_succ').click(function () {
+          $.busyLoadFull('show')
+          n_setItem('qr_print_setting', $("input[name='qr_print']:checked").val())
+          $('#setting_popup').hide()
+          $('.menu').hide()
+          $.busyLoadFull('hide')
+        })
+
+        $('#add_price').keyup(function () {
+          $.ajax({
+            type: 'POST',
+            url: url_api + 'pos/get_ps.php',
+            cache: false,
+            data: {
+              comp_idx: comp_idx,
+              price: $('#add_price').val(),
+            },
+            dataType: 'json',
+            success: function (result) {
+              $.busyLoadFull('hide')
+              if (result.state == 'success') {
+                $('#add_point').val(result.point)
+              } else {
+                n_error(result.msg)
+              }
+            },
+            error: function (xhr, err) {
+              $.busyLoadFull('hide')
+              n_error('에러가 발생했습니다.')
+            },
+          })
+        })
+
+        $('#btn_save_succ').click(function () {
+          $.busyLoadFull('show')
+          var add_price = $('#add_price').val()
+          var add_point = $('#add_point').val()
+          //포인트 불러오기
+
+          $.ajax({
+            type: 'POST',
+            url: url_api + 'pos/manual_add.php',
+            cache: false,
+            data: {
+              add_price: add_price,
+              add_point: add_point,
+              comp_idx: comp_idx,
+            },
+            dataType: 'json',
+            success: async function (result) {
+              if (result.state == 'success') {
+                localStorage.setItem('pos_idx', result.pos_idx)
+                if (localStorage.getItem('use_toggle') == 'on') {
+                  n_resize(MAIN_WIDTH, MAIN_USE_HEIGHT)
+                } else {
+                  n_resize(MAIN_WIDTH, MAIN_HEIGHT)
+                }
+                //초기화
+                $('#add_point').val('')
+                $('#add_price').val('')
+                $('#add_point_modal').hide()
+              } else {
+                n_error(result.msg)
+              }
+            },
+            error: function (xhr, err) {
+              $.busyLoadFull('hide')
+              n_error('에러가 발생했습니다.')
+            },
+          })
+        })
+
+        //스탬프 설정관련
+        $('.stamp_plus').click(function () {
+          if (localStorage.getItem('pos_idx') == 0) {
+          } else {
+            var point = parseInt($('#point').data('point'))
+            point = point + 1
+            stamp_count_change_ajax(point)
+          }
+        })
+
+        $('.stamp_minus').click(function () {
+          if (localStorage.getItem('pos_idx') == 0) {
+          } else {
+            var point = parseInt($('#point').data('point'))
+            if (point == 1) {
+            } else {
+              point = point - 1
+            }
+            stamp_count_change_ajax(point)
+          }
+        })
+        async function stamp_count_change_ajax(point) {
+          //$.busyLoadFull("show");
+          $.ajax({
+            type: 'POST',
+            url: url_api + 'pos/stamp_count.php',
+            cache: false,
+            data: {
+              comp_idx: comp_idx,
+              pos_idx: localStorage.getItem('pos_idx'),
+              point: point,
+            },
+            dataType: 'json',
+            success: async function (result) {
+              //$.busyLoadFull("hide");
+              if (result.state == 'success') {
+                $('#point')
+                  .text(point + ' Stamp')
+                  .data('point', point)
+              } else {
+                await n_error(result.msg)
+              }
+            },
+            error: async function (xhr, err) {
+              //$.busyLoadFull("hide");
+              await n_error('에러가 발생했습니다.')
+            },
+          })
+        }
+
+        
+
+        //회원버튼
+        $('.user_btn').click(function () {
+          if (localStorage.getItem('pos_idx') != 0) {
+            var pos_idx = localStorage.getItem('pos_idx')
+            //타블렛에 QRCODE호출
+            socket.emit('user_step1', {
+              comp_idx: comp_idx,
+              pos_idx: pos_idx,
+            })
+          }
+        })
+
+        //비회원버튼
+        $('.n_user_btn').click(function () {
+          if (localStorage.getItem('pos_idx') != 0) {
+            var pos_idx = localStorage.getItem('pos_idx')
+            //타블렛에 전화번호입력창 호출
+            socket.emit('n_user_step1', {
+              comp_idx: comp_idx,
+              pos_idx: pos_idx,
+            })
+          }
+        })
+
+        //취소 버튼
+        $('.go_main_btn').click(function () {
+          //메인화면으로 이동
+          socket.emit('go_main', {
+            comp_idx: comp_idx,
+          })
+        })
+
+        //사용 버튼
+        $('.ps_use').click(function () {
+          socket.emit('ps_use', {
+            comp_idx: comp_idx,
+          })
+        })
+
+        //포인트 or 쿠폰(스탬프) 승인
+
+        $('.ps_approve').click(function () {
+          if (ps_type == 'P') {
+            if (localStorage.getItem('ps_use_request_idx') != '') {
+              var approve_yn = $(this).data('approve')
+              $.busyLoadFull('show')
+              $.ajax({
+                type: 'POST',
+                url: url_api + 'ps/ps_use_ok.php',
+                cache: false,
+                data: {
+                  comp_idx: comp_idx,
+                  ps_use_request_idx: localStorage.getItem('ps_use_request_idx'),
+                  approve_yn: approve_yn,
+                },
+                dataType: 'json',
+                success: function (result) {
+                  //console.log(result);
+                  $.busyLoadFull('hide')
+                  if (result.state == 'success') {
+                    $('.user_id').text('')
+                    $('.point').text('')
+                    $('.amount').text('')
+
+                    socket.emit('ps_use_end', {
+                      comp_idx: comp_idx,
+                      approve_yn: approve_yn,
+                      ps_use_request_idx: localStorage.getItem('ps_use_request_idx'),
+                    })
+
+                    localStorage.setItem('ps_use_request_idx', '')
+                  } else {
+                    n_error(result.msg)
+                  }
+                },
+                error: function (xhr, err) {
+                  $.busyLoadFull('hide')
+                  n_error('에러가 발생했습니다.')
+                },
+              })
+            }
+          } else if (ps_type == 'S') {
+            if (localStorage.getItem('coupon_idx') != '') {
+              var approve_yn = $(this).data('approve');
+              $.busyLoadFull('show')
+              $.ajax({
+                type: 'POST',
+                url: url_api + 'user/coupon_use_ok.php',
+                cache: false,
+                data: {
+                  approve_yn:approve_yn,
+                  comp_idx: comp_idx,
+                  coupon_idx: localStorage.getItem('coupon_idx'),
+                  user_id: localStorage.getItem('user_id'),
+                  ps_use_request_idx: localStorage.getItem('ps_use_request_idx'),
+                },
+                dataType: 'json',
+                success: function (result) {
+                  $.busyLoadFull('hide')
+                  if (result.state == 'success') {
+                    localStorage.setItem('user_id', '')
+                    localStorage.setItem('coupon_idx', '')
+                    $('.user_id').text('')
+                    $('.coupon_title').text('')
+                  } else {
+                    n_error(result.msg)
+                  }
+                },
+                error: function (xhr, err) {
+                  $.busyLoadFull('hide')
+                  n_error('에러가 발생했습니다.')
+                },
+              })
+            }
+          }
+        })
+
+        //포스기에 입력된 가격 제거
+        $('.btn_pos_cancel').click(function () {
+          if (localStorage.getItem('pos_idx') != 0) {
+            $.busyLoadFull('show')
+            $.ajax({
+              type: 'POST',
+              url: url_api + 'pos/pos_end.php',
+              cache: false,
+              data: {
+                idx: idx,
+              },
+              dataType: 'json',
+              success: function (result) {
+                //console.log(result);
+                $.busyLoadFull('hide')
+                if (result.state == 'success') {
+                  $('#pos_price').text('')
+                  localStorage.setItem('pos_idx', 0)
+                } else {
+                  n_error(result.msg)
+                }
+              },
+              error: function (xhr, err) {
+                $.busyLoadFull('hide')
+                n_error('에러가 발생했습니다.')
+              },
+            })
+          }
+        })
+
+        /* 우측상단 옵션 설정 / 로그아웃 버튼메뉴 토글 */
+        $(document).on('click', '.open_menu', function () {
+          $('.menu').css('display', 'block')
+        })
+
+        $(document).on('click', '.close_menu', function () {
+          $('.menu').css('display', 'none')
+        })
+
+        $(document).on('click', '.logout', async function () {
+          var result = await n_confirm('로그아웃 하시겠습니까?')
+          if (result == 0) {
+            await n_clearItem()
+            await n_resize(500, 500)
+            location.href = './login.html'
+          }
+        })
+
+        //지난 결제 리스트
+        $('.pos_list').click(async function () {
+          if (!$(this).hasClass('on')) {
+            $(this).addClass('on')
+            $(this).text('닫기')
+
+            save_list()
+          } else {
+            $(this).removeClass('on')
+            $(this).text('적립내역')
+            await n_resize(MAIN_WIDTH, MAIN_HEIGHT)
+            $('.button_wrap').css('display', '')
+            $('.pos_list_wrap').css('display', 'none')
+            $('.pos_list').find('i').removeClass('fa-arrow-alt-circle-up').addClass('fa-arrow-alt-circle-down')
+          }
+        })
+
+        $(document).on('click', '.pos_select', function () {
+          var idx = $(this).data('idx')
+          var price = $(this).data('price')
+          var is_end = $(this).data('is_end')
+
+          // var visit_cnt = $(this).data("visit_cnt");
+          // setVisitCount(visit_cnt);
+
+          if (is_end == 'Y') {
+            $('#alert_ment').text('적립완료된 내역입니다.')
+            $('#alert_popup').show()
+            return
+          }
+          $('.pos_list').text('적립내역')
+          localStorage.setItem('pos_idx', idx)
+          $('#pos_price').text(price + '원')
+
+          $.busyLoadFull('show')
+          $.ajax({
+            type: 'POST',
+            url: url_api + 'pos/get_ps.php',
+            cache: false,
+            data: {
+              pos_idx: idx,
+              comp_idx: comp_idx,
+              price: price,
+            },
+            dataType: 'json',
+            success: async function (result) {
+              //console.log(result);
+              $.busyLoadFull('hide')
+              if (result.state == 'success') {
+                if (ps_type === 'P') {
+                  $('#point')
+                    .text(result.point + ' Point')
+                    .data('point', result.point)
+                } else if (ps_type === 'S') {
+                  $('#point')
+                    .text(result.point + ' Stamp')
+                    .data('point', result.point)
+                }
+
+                $('.pos_list').removeClass('on')
+                await n_resize(MAIN_WIDTH, MAIN_HEIGHT)
+                $('.button_wrap').css('display', '')
+                $('.pos_list_wrap').css('display', 'none')
+                $('.pos_list').find('i').removeClass('fa-arrow-alt-circle-up').addClass('fa-arrow-alt-circle-down')
+              } else {
+                n_error(result.msg)
+              }
+            },
+            error: function (xhr, err) {
+              $.busyLoadFull('hide')
+              n_error('에러가 발생했습니다.')
+            },
+          })
+        })
+
+        //포인트 사용내역
+        $(document).on('click', '.point_use_list', function () {
+          $.busyLoadFull('show')
+          $.ajax({
+            type: 'POST',
+            url: url_api + 'pos/point_use_list.php',
+            cache: false,
+            data: {
+              comp_idx: comp_idx,
+            },
+            dataType: 'json',
+            success: async function (result) {
+              //console.log(result);
+              $.busyLoadFull('hide')
+              if (result.state == 'success') {
+                $('#point_use_wrap').empty()
+                var temp = ''
+                for (var i = 0; i < result.data.length; i++) {
+                  temp = temp + '<p>' + result.data[i].user_id + ' / ' + result.data[i].amount + ' / ' + result.data[i].approve_yn + ' / ' + result.data[i].created_at + '</p>'
+                }
+                $('#point_use_wrap').append(temp)
+                Fancybox.show([{ src: '#point_use_modal', type: 'inline' }], {
+                  dragToClose: false,
+                  hideScrollbar: false,
+                })
+              } else {
+                await n_error(result.msg)
+              }
+            },
+            error: async function (xhr, err) {
+              $.busyLoadFull('hide')
+              await n_error('에러가 발생했습니다.')
+            },
+          })
+        })
+
+        //쿠폰 사용내역
+        $(document).on('click', '.coupon_use_list', function () {
+          $.busyLoadFull('show')
+          $.ajax({
+            type: 'POST',
+            url: url_api + 'pos/coupon_use_list.php',
+            cache: false,
+            data: {
+              comp_idx: comp_idx,
+            },
+            dataType: 'json',
+            success: async function (result) {
+              //console.log(result);
+              $.busyLoadFull('hide')
+              if (result.state == 'success') {
+                $('#coupon_use_wrap').empty()
+                var temp = ''
+                for (var i = 0; i < result.data.length; i++) {
+                  temp = temp + '<p>' + result.data[i].user_id + ' / ' + result.data[i].log + ' / ' + result.data[i].created_at + '</p>'
+                }
+                $('#coupon_use_wrap').append(temp)
+                Fancybox.show([{ src: '#coupon_use_modal', type: 'inline' }], {
+                  dragToClose: false,
+                  hideScrollbar: false,
+                })
+              } else {
+                await n_error(result.msg)
+              }
+            },
+            error: async function (xhr, err) {
+              $.busyLoadFull('hide')
+              await n_error('에러가 발생했습니다.')
+            },
+          })
+        })
+
+        //인원 카운팅
+        $('.plus_btn').click(function () {
+          if (localStorage.getItem('pos_idx') == 0) {
+          } else {
+            var count = parseInt($('#visit_count').val())
+            count = count + 1
+
+            $.ajax({
+              type: 'POST',
+              url: url_api + 'pos/visit_count.php',
+              cache: false,
+              data: {
+                comp_idx: comp_idx,
+                pos_idx: localStorage.getItem('pos_idx'),
+                count: count,
+              },
+              dataType: 'json',
+              success: async function (result) {
+                //console.log(result);
+                //$.busyLoadFull("hide");
+                if (result.state == 'success') {
+                  setVisitCount(count)
+                } else {
+                  await n_error(result.msg)
+                }
+              },
+              error: async function (xhr, err) {
+                //$.busyLoadFull("hide");
+                await n_error('에러가 발생했습니다.')
+              },
+            })
+          }
+        })
+
+        $('.minus_btn').click(function () {
+          if (localStorage.getItem('pos_idx') == 0) {
+          } else {
+            var count = parseInt($('#visit_count').val())
+            if (count == 1) {
+            } else {
+              count = count - 1
+            }
+            $.ajax({
+              type: 'POST',
+              url: url_api + 'pos/visit_count.php',
+              cache: false,
+              data: {
+                comp_idx: comp_idx,
+                pos_idx: localStorage.getItem('pos_idx'),
+                count: count,
+              },
+              dataType: 'json',
+              success: async function (result) {
+                //console.log(result);
+                //$.busyLoadFull("hide");
+                if (result.state == 'success') {
+                  setVisitCount(count)
+                } else {
+                  await n_error(result.msg)
+                }
+              },
+              error: async function (xhr, err) {
+                //$.busyLoadFull("hide");
+                await n_error('에러가 발생했습니다.')
+              },
+            })
+          }
+        })
+        //기본포인트사용 토글
+        if (localStorage.getItem('use_toggle') == 'on') {
+          $('.point_use_toggle').addClass('on')
+          $('.point_use_toggle').removeClass('fa-arrow-alt-circle-down').addClass('fa-arrow-alt-circle-up')
+        } else {
+          $('.point_use_toggle').removeClass('on')
+          $('.point_use_toggle').removeClass('fa-arrow-alt-circle-up').addClass('fa-arrow-alt-circle-down')
+        }
+        //포인트사용 토글
+        $(document).on('click', '.point_use_toggle', async function () {
+          if (!$(this).hasClass('on')) {
+            $(this).addClass('on')
+            await n_resize(MAIN_WIDTH, MAIN_USE_HEIGHT)
+            localStorage.setItem('use_toggle', 'on')
+            $(this).removeClass('fa-arrow-alt-circle-down').addClass('fa-arrow-alt-circle-up')
+          } else {
+            $(this).removeClass('on')
+            await n_resize(MAIN_WIDTH, MAIN_HEIGHT)
+            localStorage.setItem('use_toggle', 'off')
+            $(this).removeClass('fa-arrow-alt-circle-up').addClass('fa-arrow-alt-circle-down')
+          }
+        })
+
+        //SMS 재전송
+        $(document).on('click', '.resend_sms', function (e) {
+          e.stopPropagation()
+          var phone = $(this).data('phone')
+          var pos_idx = $(this).data('pos_idx')
+          sessionStorage.setItem('resend_phone', phone)
+          sessionStorage.setItem('resend_pos_idx', pos_idx)
+          $('#sms_popup').css('display', 'block')
+        })
+
+        //SMS 재전송기능
+        $('#btn_sms_send_yes').click(function () {
+          $.busyLoadFull('show')
+          // 토큰발급받는과정 같음
+          $.ajax({
+            type: 'POST',
+            url: url + 'api/token_issue_bak.php',
+            cache: false,
+            data: {
+              token_type:"SMS",
+              phone: sessionStorage.getItem('resend_phone'),
+              pos_idx:sessionStorage.getItem("resend_pos_idx"),
+            },
+            dataType: 'json',
+            success: async function (result) {
+              $('#sms_popup').css('display', 'none')
+              $.busyLoadFull('hide')
+              if (result.state == 'success') {
+                $('#alert_ment').text('재전송이 완료되었습니다.')
+                $('#alert_popup').show()
+              } else {
+                await n_error(result.msg)
+              }
+            },
+            error: async function (xhr, err) {
+              $('#sms_popup').css('display', 'none')
+              $.busyLoadFull('hide')
+              await n_error('에러가 발생했습니다.')
+            },
+          })
+        })
+      })
+
+      
+        //QR코드 출력
+        $(document).on('click', '.qr_code_issue', function (e) {
+          e.stopPropagation()
+          var pos_idx = $(this).data('pos_idx')
+          sessionStorage.setItem('qr_code_issue_pos_idx', pos_idx)
+          $('#qr_code_issue_popup').css('display', 'block')
+        })
+
+        
+        //SMS 재전송기능
+        $('#btn_qr_code_issue_yes').click(function () {
+          $.busyLoadFull('show')
+
+          $.ajax({
+            type: 'POST',
+            url: url + 'api/token_issue_bak.php',
+            cache: false,
+            data: {
+              token_type:"POS_QR2", //포스기 QR2
+              pos_idx: sessionStorage.getItem('qr_code_issue_pos_idx'),
+            },
+            dataType: 'json',
+            success: async function (result) {
+              $('#qr_code_issue_popup').css('display', 'none')
+              console.log(result);
+              $.busyLoadFull('hide')
+              if (result.state == 'success') {
+                n_qr_code_issue(url_j+"q="+result.qr_code);
+                $('#alert_ment').text('QR코드를 출력하였습니다.')
+                $('#alert_popup').show()
+              } else {
+                await n_error(result.msg)
+              }
+            },
+            error: async function (xhr, err) {
+              $('#sms_popup').css('display', 'none')
+              $.busyLoadFull('hide')
+              await n_error('에러가 발생했습니다.')
+            },
+          })
+        })
+
+    
+
+      function setVisitCount(count) {
+        $('#visit_count').val(count)
+        $('.count_view').text(count)
+      }
+
+      //무한 스크롤 적립내역
+      var allowInfinite = true
+
+      var offset = 1
+
+      function save_list() {
+        $.ajax({
+          type: 'POST',
+          url: url_api + 'pos/pos_list.php',
+          cache: false,
+          data: {
+            comp_idx: comp_idx,
+            offset: offset,
+            phone_num: $('#phone_num_txt').val(),
+            ps_type: ps_type,
+          },
+          dataType: 'json',
+          success: async function (result) {
+            //console.log(result);
+            $.busyLoadFull('hide')
+            if (result.state == 'success') {
+              $('#pos_list').empty()
+              if (result.data.length == 0) {
+                //1페이지일때
+                $('#pos_list').append('<hr/>마지막내역입니다.')
+                allowInfinite = false
+              } else {
+                for (var i = 0; i < result.data.length; i++) {
+                  //console.log(i)
+                  $('#pos_list').append(Mustache.render(template, result.data[i]))
+                }
+              }
+              await n_resize(MAIN_WIDTH, 500)
+              $('.button_wrap').css('display', 'none')
+              $('.pos_list_wrap').css('display', '')
+              $('.pos_list').find('i').removeClass('fa-arrow-alt-circle-down').addClass('fa-arrow-alt-circle-up')
+            } else {
+              n_error(result.msg)
+            }
+          },
+          error: function (xhr, err) {
+            $.busyLoadFull('hide')
+            n_error('에러가 발생했습니다.')
+          },
+        })
+      }
+
+      $('#next_btn').click(function () {
+        if (allowInfinite) {
+          $.busyLoadFull('show')
+          offset++
+          save_list()
+        }
+      })
+      $('#prev_btn').click(function () {
+        if (offset == 1) {
+          $('#alert_popup').show()
+          $('#alert_ment').text('이전내역이 없습니다.')
+        } else {
+          allowInfinite = true
+          $.busyLoadFull('show')
+          offset--
+          save_list()
+        }
+      })
+      $('#phone_num_txt').keyup(function () {
+        offset = 1
+        allowInfinite = true
+        save_list()
+      })
+
+      //포인트 or 스탬프 삭제
+      $(document).on('click', '.ps_save_del', function (e) {
+        e.stopPropagation()
+        sessionStorage.setItem('sidx', $(this).data('sidx'))
+        $('#yes_no_popup').show()
+      })
+      $(document).on('click', '#btn_yes', function (e) {
+        //포인트 취소
+        if (ps_type == 'P') {
+          $.busyLoadFull('show')
+          $.ajax({
+            type: 'POST',
+            url: url_api + 'pos/pos_point_del.php',
+            cache: false,
+            data: {
+              idx: sessionStorage.getItem('sidx'),
+            },
+            dataType: 'json',
+            success: async function (result) {
+              //console.log(result);
+              $('#yes_no_popup').hide()
+              if (result.state == 'success') {
+                save_list()
+              } else {
+                $.busyLoadFull('hide')
+                $('#error_popup_ment').text(result.msg)
+                $('#error_popup').show()
+              }
+            },
+            error: function (xhr, err) {
+              $.busyLoadFull('hide')
+              n_error('에러가 발생했습니다.')
+            },
+          })
+        } else if (ps_type == 'S') {
+          //스탬프 취소
+          $.busyLoadFull('show')
+          $.ajax({
+            type: 'POST',
+            url: url_api + 'pos/pos_stamp_del.php',
+            cache: false,
+            data: {
+              idx: sessionStorage.getItem('sidx'),
+            },
+            dataType: 'json',
+            success: async function (result) {
+              //console.log(result);
+              $('#yes_no_popup').hide()
+              if (result.state == 'success') {
+                save_list()
+              } else {
+                $.busyLoadFull('hide')
+                $('#error_popup_ment').text(result.msg)
+                $('#error_popup').show()
+              }
+            },
+            error: function (xhr, err) {
+              $.busyLoadFull('hide')
+              n_error('에러가 발생했습니다.')
+            },
+          })
+        }
+      })
+    </script>
+  </body>
+</html>

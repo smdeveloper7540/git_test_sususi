@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>스스시</title>
+    <link rel="stylesheet" href="../css/default.css" />
+    <link rel="stylesheet" href="../css/main.css" />
+    <link rel="stylesheet" href="../css/NotoSansKR.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+
+    <link rel="stylesheet" href="../css/fontawesome.min.css" />
+
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script src="../js/function.js"></script>
+    <script src="../js/socket.io.js"></script>
+    <script src="../js/busyload.min.js"></script>
+    <link rel="stylesheet" href="../js/busyload.min.css" />
+    <script src="../js/mustache.min.js"></script>
+
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+    <script src="../js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="../js/fancybox4/fancybox.css" />
+    <script src="../js/fancybox4/fancybox.umd.js"></script>
+
+    <script src="../js/nativeFunction.js"></script>
+
+    <style>
+      body {
+        -webkit-touch-callout: none;
+        -webkit-text-size-adjust: none;
+        -ms-text-size-adjust: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-highlight: none;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .comp_button {
+        padding: 20px;
+        border: 1px solid #f5f5f5;
+        border-radius: 8px;
+        background: #f5f5f5;
+        margin-bottom: 20px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: -0.45px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div
+      class="container po_rel"
+      style="border-bottom: 1px solid; height: 30px"
+    >
+      <div style="float: left" id="cafe_name"></div>
+      <div
+        style="
+          width: 20px;
+          height: 20px;
+          border: 1px solid;
+          float: right;
+          text-align: center;
+        "
+        class="open_menu"
+      >
+        =
+      </div>
+      <div class="clearfix"></div>
+    </div>
+    <div
+      class="menu"
+      style="
+        position: absolute;
+        background-color: #fff;
+        height: 400px;
+        width: 100%;
+        left: 0;
+        top: 0;
+        display: none;
+        z-index: 999;
+      "
+    >
+      <div class="po_rel" style="width: 100%">
+        <div
+          style="
+            float: right;
+            width: 30px;
+            height: 30px;
+            border: 1px solid;
+            text-align: center;
+          "
+          class="close_menu"
+        >
+          X
+        </div>
+        <div class="clearfix"></div>
+        <hr />
+        <div class="point_use_toggle" data-use="N">적립사용 ON/OFF</div>
+        <hr />
+        <div class="logout">로그아웃</div>
+        <hr />
+        <div class="version"></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row" style="position: relative; width: 300px">
+        <div class="">
+          판매금액 : <span id="pos_price" data-price="0" data-idx="0"></span>
+        </div>
+        <div>적립포인트 : <span id="point" data-point="0"></span></div>
+        <div
+          style="position: absolute; top: 5px; right: -80%; z-index: 998"
+          class="pos_list"
+        >
+          <i class="fas fa-arrow-alt-circle-down fa-2x"></i>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+      <div class="pos_list_wrap" style="display: none">
+        <div id="pos_list"></div>
+      </div>
+
+      <div class="button_wrap">
+        <div
+          style="
+            width: 100%;
+            position: relative;
+            padding-top: 5px;
+            display: none;
+          "
+        >
+          <input type="hidden" id="visit_count" value="1" />
+          <div
+            class="count_view"
+            style="
+              width: 33.3%;
+              height: 50px;
+              float: left;
+              box-sizing: border-box;
+              border: 1px solid;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background-color: rgb(0, 0, 0);
+              color: white;
+            "
+          >
+            1
+          </div>
+          <div
+            class="plus_btn"
+            style="
+              width: 33.3%;
+              height: 50px;
+              float: left;
+              box-sizing: border-box;
+              border: 1px solid;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background-color: rgb(204, 43, 43);
+              color: white;
+            "
+          >
+            +
+          </div>
+          <div
+            class="minus_btn"
+            style="
+              width: 33.3%;
+              height: 50px;
+              float: left;
+              box-sizing: border-box;
+              border: 1px solid;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background-color: rgb(38, 0, 255);
+              color: white;
+            "
+          >
+            -
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        <div style="width: 100%; position: relative">
+          <div
+            class="user_btn"
+            style="
+              width: 33.3%;
+              height: 80px;
+              float: left;
+              box-sizing: border-box;
+              border: 1px solid;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background-color: rgb(231, 103, 64);
+              color: white;
+            "
+          >
+            회원
+          </div>
+          <div
+            class="n_user_btn"
+            style="
+              width: 33.3%;
+              height: 80px;
+              float: left;
+              box-sizing: border-box;
+              border: 1px solid;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background-color: rgb(43, 94, 204);
+              color: white;
+            "
+          >
+            비회원
+          </div>
+          <div
+            class="go_main_btn"
+            style="
+              width: 33.3%;
+              height: 80px;
+              float: left;
+              box-sizing: border-box;
+              border: 1px solid;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background-color: rgb(150, 189, 45);
+              color: white;
+            "
+          >
+            메인화면이동
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        <div style="width: 100%; position: relative">
+          <div
+            class="btn_pos_cancel"
+            style="
+              width: 100%;
+              height: 50px;
+              background-color: rgb(206, 21, 61);
+              color: white;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            "
+          >
+            적립안함
+          </div>
+        </div>
+
+        <div style="width: 100%; position: relative; padding-top: 5px">
+          <!-- 태블릿 화면 QRCODE-->
+          <!--
+                    0. 사용자가 포인트 쓴다고함
+                    1. POS기에서 사용버튼 클릭 (이벤트 발생시 태블릿에서 QRCODE 호출)
+                   
+                    2. 사용자가 카페인 앱을 사용해서 QRCODE를 찍는다 // 얼마쓸건지를 같이 보냄
+
+
+                    3. QRCODE를 찍고나면 POS기에 보유포인트가 출력된다
+
+                    4. 직원이 몇포인트 쓸건지 물어본다.
+                    5. 1000포인트 쓴다고함
+                    6. 직원 1000 포인트 입력을하고 적용 누르면 끝 (포스기에서 1000포인트 입력이 쉬울까?) / 키패드 만들어줘야함
+
+                    ---
+                    7. 실제 결제시 직원  4000원짜리 삿으면 1000원 깍아주고 끝
+
+
+                -->
+
+          <div
+            class="ps_use"
+            style="
+              width: 20%;
+              height: 50px;
+              background-color: rgba(16, 58, 197, 0.801);
+              color: white;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              float: left;
+            "
+          >
+            사용
+          </div>
+          <div style="float: left">
+            아이디 : <span class="user_id"></span><br />
+            보유포인트 : <span class="point"></span><br />
+            사용포인트 : <span class="amount"></span><br />
+          </div>
+          <div style="clear: both"></div>
+        </div>
+        <div style="width: 100%; position: relative; padding-top: 5px">
+          <div
+            class="point_use_list"
+            style="
+              width: 20%;
+              height: 30px;
+              float: left;
+              box-sizing: border-box;
+              border: 1px solid;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background-color: #fff;
+              color: rgb(34, 40, 124);
+            "
+          >
+            내역
+          </div>
+          <div
+            class="ps_approve"
+            data-approve="Y"
+            style="
+              width: 40%;
+              height: 30px;
+              float: left;
+              box-sizing: border-box;
+              border: 1px solid;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background-color: rgb(19, 224, 81);
+              color: white;
+            "
+          >
+            승인
+          </div>
+          <div
+            class="ps_approve"
+            data-approve="N"
+            style="
+              width: 40%;
+              height: 30px;
+              float: left;
+              box-sizing: border-box;
+              border: 1px solid;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background-color: rgb(182, 19, 27);
+              color: white;
+            "
+          >
+            거절
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="point_use_modal" style="display: none">
+      <h1 class="text-algin-center">사용내역</h1>
+      <p>아이디 / 가격/ 사용유무 / 등록일</p>
+      <div id="point_use_wrap"></div>
+    </div>
+
+    <script type="module">
+      import {
+        MAIN_WIDTH,
+        MAIN_USE_HEIGHT,
+        MAIN_HEIGHT,
+      } from '../lib/constant_esm.js'
+
+      const url = 'https://cafein125.softwow.co.kr/'
+      const url_api = 'https://cafein125.softwow.co.kr/api/'
+      $.busyLoadSetup({
+        animation: 'fade',
+        spinner: 'accordion',
+        background: 'rgba(60, 60, 60, 0.86)',
+        text: '로딩중 ..',
+      })
+
+      $.busyLoadFull('show')
+
+      var socketurl = 'https://softwow.co.kr:3020/pos'
+      var socket = io.connect(socketurl, {
+        transports: ['websocket'],
+        upgrade: true,
+      })
+
+      var version = ''
+      var mem_info = ''
+      var comp_idx = ''
+      var comp_name = ''
+      ;(async () => {
+        try {
+          var dec = await n_getItem('mem_info')
+          mem_info = JSON.parse(await n_decrypt(dec))
+          comp_idx = mem_info.comp_idx
+          comp_name = mem_info.comp_name
+
+          $('#cafe_name').text(comp_name)
+          socket.emit(
+            'init',
+            {
+              comp_idx: comp_idx,
+            },
+            initDone,
+          )
+          version = await n_getVersion()
+
+          localStorage.setItem('pos_idx', 0)
+          localStorage.setItem('ps_use_request_idx', '')
+        } catch (e) {
+          await n_clearItem()
+          location.href = './login.html'
+        }
+      })()
+
+      function initDone() {
+        $.busyLoadFull('hide')
+      }
+
+      //포스기에서 결제후 가격 업데이트
+      socket.on('pos_price', function (res) {
+        localStorage.setItem('pos_idx', res.idx)
+        $('#pos_price').text(res.price + '원')
+
+        $.busyLoadFull('show')
+        $.ajax({
+          type: 'POST',
+          url: url_api + 'pos/get_ps.php',
+          cache: false,
+          data: {
+            comp_idx: comp_idx,
+            price: res.price,
+          },
+          dataType: 'json',
+          success: function (result) {
+            //console.log(result);
+            $.busyLoadFull('hide')
+            if (result.state == 'success') {
+              $('#point').text(result.point + 'P')
+            } else {
+              n_error(result.msg)
+            }
+          },
+          error: function (xhr, err) {
+            $.busyLoadFull('hide')
+            n_error('에러가 발생했습니다.')
+          },
+        })
+      })
+
+      socket.on('ps_save_end', function (res) {
+        //console.log("CALLED");
+        $('#pos_price').text('')
+        localStorage.setItem('pos_idx', 0)
+        $('#point').text('적립완료')
+      })
+
+      //유저 적립 완료 요청
+      socket.on('ps_user_save_call', function (res) {
+        var ps_use_request_idx = res.ps_use_request_idx
+        localStorage.setItem('ps_use_request_idx', ps_use_request_idx)
+
+        $.busyLoadFull('show')
+        $.ajax({
+          type: 'POST',
+          url: url_api + 'pos/get_ps_request.php',
+          cache: false,
+          data: {
+            comp_idx: comp_idx,
+            ps_use_request_idx: ps_use_request_idx,
+          },
+          dataType: 'json',
+          success: function (result) {
+            //console.log(result);
+            $.busyLoadFull('hide')
+            if (result.state == 'success') {
+              $('.user_id').text(result.user_id)
+              $('.point').text(result.point + 'P')
+              $('.amount').text(result.amount + 'P')
+              setVisitCount(1)
+            } else {
+              n_error(result.msg)
+            }
+          },
+          error: function (xhr, err) {
+            $.busyLoadFull('hide')
+            n_error('에러가 발생했습니다.')
+          },
+        })
+      })
+
+      //사용자의 적립자체는 자동으로 진행됨
+      $(document).ready(async function () {
+        //앱버전
+        $('.version').text(version)
+
+        //회원버튼
+        $('.user_btn').click(function () {
+          if (localStorage.getItem('pos_idx') != 0) {
+            var pos_idx = localStorage.getItem('pos_idx')
+            //타블렛에 QRCODE호출
+            socket.emit('user_step1', {
+              comp_idx: comp_idx,
+              pos_idx: pos_idx,
+            })
+          }
+        })
+
+        //비회원버튼
+        $('.n_user_btn').click(function () {
+          if (localStorage.getItem('pos_idx') != 0) {
+            var pos_idx = localStorage.getItem('pos_idx')
+            //타블렛에 전화번호입력창 호출
+            socket.emit('n_user_step1', {
+              comp_idx: comp_idx,
+              pos_idx: pos_idx,
+            })
+          }
+        })
+
+        //취소 버튼
+        $('.go_main_btn').click(function () {
+          //메인화면으로 이동
+          socket.emit('go_main', {
+            comp_idx: comp_idx,
+          })
+        })
+
+        //사용 버튼
+        $('.ps_use').click(function () {
+          socket.emit('ps_use', {
+            comp_idx: comp_idx,
+          })
+        })
+
+        //포인트 승인
+        $('.ps_approve').click(function () {
+          if (localStorage.getItem('ps_use_request_idx') != '') {
+            var approve_yn = $(this).data('approve')
+            $.busyLoadFull('show')
+            $.ajax({
+              type: 'POST',
+              url: url_api + 'ps/ps_use_ok.php',
+              cache: false,
+              data: {
+                comp_idx: comp_idx,
+                ps_use_request_idx: localStorage.getItem('ps_use_request_idx'),
+                approve_yn: approve_yn,
+              },
+              dataType: 'json',
+              success: function (result) {
+                //console.log(result);
+                $.busyLoadFull('hide')
+                if (result.state == 'success') {
+                  $('.user_id').text('')
+                  $('.point').text('')
+                  $('.amount').text('')
+
+                  socket.emit('ps_use_end', {
+                    comp_idx: comp_idx,
+                    approve_yn: approve_yn,
+                    ps_use_request_idx:
+                      localStorage.getItem('ps_use_request_idx'),
+                  })
+
+                  localStorage.setItem('ps_use_request_idx', '')
+                } else {
+                  n_error(result.msg)
+                }
+              },
+              error: function (xhr, err) {
+                $.busyLoadFull('hide')
+                n_error('에러가 발생했습니다.')
+              },
+            })
+          }
+        })
+
+        //포스기에 입력된 가격 제거
+        $('.btn_pos_cancel').click(function () {
+          if (localStorage.getItem('pos_idx') != 0) {
+            $.busyLoadFull('show')
+            $.ajax({
+              type: 'POST',
+              url: url_api + 'pos/pos_end.php',
+              cache: false,
+              data: {
+                idx: idx,
+              },
+              dataType: 'json',
+              success: function (result) {
+                //console.log(result);
+                $.busyLoadFull('hide')
+                if (result.state == 'success') {
+                  $('#pos_price').text('')
+                  localStorage.setItem('pos_idx', 0)
+                } else {
+                  n_error(result.msg)
+                }
+              },
+              error: function (xhr, err) {
+                $.busyLoadFull('hide')
+                n_error('에러가 발생했습니다.')
+              },
+            })
+          }
+        })
+
+        $(document).on('click', '.open_menu', function () {
+          $('.menu').css('display', 'block')
+        })
+
+        $(document).on('click', '.close_menu', function () {
+          $('.menu').css('display', 'none')
+        })
+
+        $(document).on('click', '.logout', async function () {
+          var result = await n_confirm('로그아웃 하시겠습니까?')
+          if (result == 0) {
+            await n_clearItem()
+            await n_resize(500, 500)
+            location.href = './login.html'
+          }
+        })
+
+        //지난 결제 리스트
+        $('.pos_list').click(async function () {
+          if (!$(this).hasClass('on')) {
+            $(this).addClass('on')
+
+            $.busyLoadFull('show')
+            $.ajax({
+              type: 'POST',
+              url: url_api + 'pos/pos_list.php',
+              cache: false,
+              data: {
+                comp_idx: comp_idx,
+              },
+              dataType: 'json',
+              success: async function (result) {
+                //console.log(result);
+                $.busyLoadFull('hide')
+                if (result.state == 'success') {
+                  $('#pos_list').empty()
+                  if (result.data.length == 0) {
+                    $('#pos_list').append('최신 등록내역이 없습니다.')
+                  } else {
+                    for (var i = 0; i < result.data.length; i++) {
+                      $('#pos_list').append(
+                        '<p>금액 : ' +
+                          result.data[i].price +
+                          '(' +
+                          result.data[i].created_at +
+                          ') (' +
+                          result.data[i].is_end +
+                          ")<span style='float:right;border:1px solid;' data-idx='" +
+                          result.data[i].idx +
+                          "' data-price='" +
+                          result.data[i].price +
+                          "'  data-visit_cnt='" +
+                          result.data[i].visit_cnt +
+                          "' class='pos_select'>선택</span></p>",
+                      )
+                    }
+                  }
+                  await n_resize(MAIN_WIDTH, 500)
+                  $('.button_wrap').css('display', 'none')
+                  $('.pos_list_wrap').css('display', '')
+                  $('.pos_list')
+                    .find('i')
+                    .removeClass('fa-arrow-alt-circle-down')
+                    .addClass('fa-arrow-alt-circle-up')
+                } else {
+                  n_error(result.msg)
+                }
+              },
+              error: function (xhr, err) {
+                $.busyLoadFull('hide')
+                n_error('에러가 발생했습니다.')
+              },
+            })
+          } else {
+            $(this).removeClass('on')
+            await n_resize(MAIN_WIDTH, MAIN_HEIGHT)
+            $('.button_wrap').css('display', '')
+            $('.pos_list_wrap').css('display', 'none')
+            $('.pos_list')
+              .find('i')
+              .removeClass('fa-arrow-alt-circle-up')
+              .addClass('fa-arrow-alt-circle-down')
+          }
+        })
+
+        $(document).on('click', '.pos_select', function () {
+          var idx = $(this).data('idx')
+          var price = $(this).data('price')
+
+          var visit_cnt = $(this).data('visit_cnt')
+          setVisitCount(visit_cnt)
+
+          localStorage.setItem('pos_idx', idx)
+          $('#pos_price').text(price + '원')
+
+          $.busyLoadFull('show')
+          $.ajax({
+            type: 'POST',
+            url: url_api + 'pos/get_ps.php',
+            cache: false,
+            data: {
+              comp_idx: comp_idx,
+              price: price,
+            },
+            dataType: 'json',
+            success: async function (result) {
+              //console.log(result);
+              $.busyLoadFull('hide')
+              if (result.state == 'success') {
+                $('#point').text(result.point + 'P')
+                $('.pos_list').removeClass('on')
+                await n_resize(MAIN_WIDTH, MAIN_HEIGHT)
+                $('.button_wrap').css('display', '')
+                $('.pos_list_wrap').css('display', 'none')
+                $('.pos_list')
+                  .find('i')
+                  .removeClass('fa-arrow-alt-circle-up')
+                  .addClass('fa-arrow-alt-circle-down')
+              } else {
+                n_error(result.msg)
+              }
+            },
+            error: function (xhr, err) {
+              $.busyLoadFull('hide')
+              n_error('에러가 발생했습니다.')
+            },
+          })
+        })
+
+        //포인트 사용내역
+        $(document).on('click', '.point_use_list', function () {
+          $.busyLoadFull('show')
+          $.ajax({
+            type: 'POST',
+            url: url_api + 'pos/point_use_list.php',
+            cache: false,
+            data: {
+              comp_idx: comp_idx,
+            },
+            dataType: 'json',
+            success: async function (result) {
+              //console.log(result);
+              $.busyLoadFull('hide')
+              if (result.state == 'success') {
+                $('#point_use_wrap').empty()
+                var temp = ''
+                for (var i = 0; i < result.data.length; i++) {
+                  temp =
+                    temp +
+                    '<p>' +
+                    result.data[i].user_id +
+                    ' / ' +
+                    result.data[i].amount +
+                    ' / ' +
+                    result.data[i].approve_yn +
+                    ' / ' +
+                    result.data[i].created_at +
+                    '</p>'
+                }
+                $('#point_use_wrap').append(temp)
+                Fancybox.show([{ src: '#point_use_modal', type: 'inline' }], {
+                  dragToClose: false,
+                  hideScrollbar: false,
+                })
+              } else {
+                await n_error(result.msg)
+              }
+            },
+            error: async function (xhr, err) {
+              $.busyLoadFull('hide')
+              await n_error('에러가 발생했습니다.')
+            },
+          })
+        })
+
+        //인원 카운팅
+        $('.plus_btn').click(function () {
+          if (localStorage.getItem('pos_idx') == 0) {
+          } else {
+            var count = parseInt($('#visit_count').val())
+            count = count + 1
+
+            $.ajax({
+              type: 'POST',
+              url: url_api + 'pos/visit_count.php',
+              cache: false,
+              data: {
+                comp_idx: comp_idx,
+                pos_idx: localStorage.getItem('pos_idx'),
+                count: count,
+              },
+              dataType: 'json',
+              success: async function (result) {
+                //console.log(result);
+                //$.busyLoadFull("hide");
+                if (result.state == 'success') {
+                  setVisitCount(count)
+                } else {
+                  await n_error(result.msg)
+                }
+              },
+              error: async function (xhr, err) {
+                //$.busyLoadFull("hide");
+                await n_error('에러가 발생했습니다.')
+              },
+            })
+          }
+        })
+
+        $('.minus_btn').click(function () {
+          if (localStorage.getItem('pos_idx') == 0) {
+          } else {
+            var count = parseInt($('#visit_count').val())
+            if (count == 1) {
+            } else {
+              count = count - 1
+            }
+            $.ajax({
+              type: 'POST',
+              url: url_api + 'pos/visit_count.php',
+              cache: false,
+              data: {
+                comp_idx: comp_idx,
+                pos_idx: localStorage.getItem('pos_idx'),
+                count: count,
+              },
+              dataType: 'json',
+              success: async function (result) {
+                //console.log(result);
+                //$.busyLoadFull("hide");
+                if (result.state == 'success') {
+                  setVisitCount(count)
+                } else {
+                  await n_error(result.msg)
+                }
+              },
+              error: async function (xhr, err) {
+                //$.busyLoadFull("hide");
+                await n_error('에러가 발생했습니다.')
+              },
+            })
+          }
+        })
+
+        //포인트사용 토글
+        $(document).on('click', '.point_use_toggle', async function () {
+          var use = $(this).data('use')
+          if (use == 'N') {
+            $(this).data('use', 'Y')
+            await n_resize(MAIN_WIDTH, MAIN_USE_HEIGHT)
+          } else {
+            $(this).data('use', 'N')
+            await n_resize(MAIN_WIDTH, MAIN_HEIGHT)
+          }
+
+          $('.menu').css('display', 'none')
+        })
+      })
+
+      function setVisitCount(count) {
+        $('#visit_count').val(count)
+        $('.count_view').text(count)
+      }
+    </script>
+  </body>
+</html>
